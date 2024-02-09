@@ -249,7 +249,7 @@ jQuery(document).ready(function($){
                     }
                 }
                 if (resolvedModel && resolvedModel.toLowerCase().indexOf('pa:list')==0) {  %>
-                    <div class="col-md-4">
+                    <div class="col-md-4 container-flex">
                         <select class="form-control variableValue" name="<%- key %>" id="<%- key %>" onchange="$('#check-button').click()" title="<%- description %>" data-variable-model="<%- model %>" data-variable-description="<%- description %>" data-variable-group="<%- group %>" data-variable-advanced="<%- advanced ? 'true' : 'false' %>"  data-variable-hidden="<%- hidden ? 'true' : 'false' %>" >
                         <% var indexBegin = resolvedModel.indexOf('(');
                             var indexEnd = resolvedModel.lastIndexOf(')');
@@ -262,6 +262,9 @@ jQuery(document).ready(function($){
                                     <option><%- option %></option>
                         <% } %>
                         </select>
+                        <% if (!isSubmissionMode) { %>
+                        <button class="btn input-button glyphicon glyphicon-edit text-link m-l-xs" title="Edit variable" type="button"></button>
+                        <% } %>
                     </div>
                         <div class="variableInfo col-md-5">
                             <label class="font-smaller" data-help-self data-help="<%- description %>"><%- description %></label>
@@ -269,20 +272,29 @@ jQuery(document).ready(function($){
                         </div>
                 <% } else if ((resolvedModel && resolvedModel.toLowerCase().indexOf('pa:boolean')==0) ) {  %>
                         <div class="variableValue radio-div col-md-4" id="<%- key %>" onchange="$('#check-button').click()" title="<%- description %>" data-variable-model="<%- model %>" data-variable-description="<%- description %>" data-variable-group="<%- group %>" data-variable-advanced="<%- advanced ? 'true' : 'false' %>"  data-variable-hidden="<%- hidden ? 'true' : 'false' %>">
-                    <% if (variable.Value && (variable.Value.toLowerCase() === 'true' || Number(variable.Value) > 0)) %>
+                    <% if (variable.Value && (variable.Value.toLowerCase() === 'true' || Number(variable.Value) > 0)) {%>
                             <label class="radio-inline"><input type="radio" name="<%- key %>" value="true" checked/>TRUE</label>
                             <label class="radio-inline"><input type="radio" name="<%- key %>" value="false"/>FALSE</label>
-                    <% else %>
+                            <% if (!isSubmissionMode) { %>
+                            <button class="btn input-button glyphicon glyphicon-edit text-link m-l-xs pull-right" title="Edit variable" type="button"></button>
+                            <% } %>
+                    <% } else %>
                             <label class="radio-inline"><input type="radio" name="<%- key %>" value="true"/>TRUE</label>
                             <label class="radio-inline"><input type="radio" name="<%- key %>" value="false" checked/>FALSE</label>
+                            <% if (!isSubmissionMode) { %>
+                            <button class="btn input-button glyphicon glyphicon-edit text-link m-l-xs pull-right" title="Edit variable" type="button"></button>
+                            <% } %>
                         </div>
                         <div class="variableInfo col-md-5">
                             <label class="font-smaller" data-help-self data-help="<%- description %>"><%- description %></label>
                             <label class="font-smaller text-muted" data-help-self data-help="<%- resolvedModel %>"><%- resolvedModel %></label>
                         </div>
                 <% } else if (resolvedModel && resolvedModel.toLowerCase().indexOf('pa:hidden')==0) {  %>
-                        <div class="col-md-4">
+                        <div class="col-md-4 container-flex">
                             <input class="variableValue textareavalues submitVariableValue" name="<%- key %>" type="password" title="<%- description %>" id="<%- key %>" value="<%- _.escape(variable.Value) %>" autocomplete="new-password" data-variable-model="<%- model %>" data-variable-description="<%- description %>" data-variable-group="<%- group %>" data-variable-advanced="<%- advanced ? 'true' : 'false' %>"  data-variable-hidden="<%- hidden ? 'true' : 'false' %>" />
+                            <% if (!isSubmissionMode) { %>
+                            <button class="btn input-button glyphicon glyphicon-edit text-link m-l-xs" title="Edit variable" type="button"></button>
+                            <% } %>
                         </div>
                         <div class="variableInfo col-md-5">
                             <label class="font-smaller" data-help-self data-help="<%- description %>"><%- description %></label>
@@ -292,6 +304,9 @@ jQuery(document).ready(function($){
                             <div class="col-md-4 container-flex">
                                 <input type="text" class="variableValue textareavalues submitVariableValue" name="<%- variable.Name %>" title="<%- description %>" id="<%- key %>" value="<%- _.escape(variable.Value) %>" data-variable-model="<%- model %>" data-variable-description="<%- description %>" data-variable-group="<%- group %>" data-variable-advanced="<%- advanced ? 'true' : 'false' %>"  data-variable-hidden="<%- hidden ? 'true' : 'false' %>" />
                                 <button class="third-party-credential-button btn input-button" value="<%- key %>" title="Manage third-party credentials" type="button"><img src="images/key.png"></button>
+                                <% if (!isSubmissionMode) { %>
+                                <button class="btn input-button glyphicon glyphicon-edit text-link m-l-xs" title="Edit variable" type="button"></button>
+                                <% } %>
                             </div>
                             <div class="variableInfoWButton col-md-5">
                                 <div class="variableInfo">
@@ -303,6 +318,9 @@ jQuery(document).ready(function($){
                             <div class="col-md-4 container-flex">
                                 <input type="text" class="variableValue textareavalues submitVariableValue" name="<%- variable.Name %>" title="<%- description %>" id="<%- key %>" value="<%- _.escape(variable.Value) %>" data-variable-model="<%- model %>" data-variable-description="<%- description %>" data-variable-group="<%- group %>" data-variable-advanced="<%- advanced ? 'true' : 'false' %>"  data-variable-hidden="<%- hidden ? 'true' : 'false' %>" />
                                 <button value="<%- key %>" class="var-globalfile-button btn far fa-folder-open input-button" type="button" title="Browse Global Space files, Upload, and Select one file"></button>
+                                <% if (!isSubmissionMode) { %>
+                                <button class="btn input-button glyphicon glyphicon-edit text-link m-l-xs" title="Edit variable" type="button"></button>
+                                <% } %>
                             </div>
                             <div class="variableInfoWButton col-md-5">
                                 <div class="variableInfo">
@@ -314,6 +332,9 @@ jQuery(document).ready(function($){
                             <div class="col-md-4 container-flex">
                                 <input type="text" class="variableValue textareavalues submitVariableValue" name="<%- variable.Name %>" title="<%- description %>" id="<%- key %>" value="<%- _.escape(variable.Value) %>" data-variable-model="<%- model %>" data-variable-description="<%- description %>" data-variable-group="<%- group %>" data-variable-advanced="<%- advanced ? 'true' : 'false' %>"  data-variable-hidden="<%- hidden ? 'true' : 'false' %>" />
                                 <button value="<%- key %>" class="var-userfile-button btn far fa-folder-open input-button" type="button" title="Browse User Space files, Upload, and Select one file"></button>
+                                <% if (!isSubmissionMode) { %>
+                                <button class="btn input-button glyphicon glyphicon-edit text-link m-l-xs" title="Edit variable" type="button"></button>
+                                <% } %>
                             </div>
                             <div class="variableInfoWButton col-md-5">
                                 <div class="variableInfo">
@@ -325,6 +346,9 @@ jQuery(document).ready(function($){
                             <div class="col-md-4 container-flex">
                                 <input type="text" class="variableValue textareavalues submitVariableValue" name="<%- variable.Name %>" title="<%- description %>" id="<%- key %>" value="<%- _.escape(variable.Value) %>" data-variable-model="<%- model %>" data-variable-description="<%- description %>" data-variable-group="<%- group %>" data-variable-advanced="<%- advanced ? 'true' : 'false' %>"  data-variable-hidden="<%- hidden ? 'true' : 'false' %>" />
                                 <button value="<%- key %>" class="var-globalfolder-button btn far fa-folder-open input-button" type="button" title="Browse, Upload Global Space files, and Select one folder"></button>
+                                <% if (!isSubmissionMode) { %>
+                                <button class="btn input-button glyphicon glyphicon-edit text-link m-l-xs" title="Edit variable" type="button"></button>
+                                <% } %>
                             </div>
                             <div class="variableInfoWButton col-md-5">
                                 <div class="variableInfo">
@@ -336,6 +360,9 @@ jQuery(document).ready(function($){
                             <div class="col-md-4 container-flex">
                                 <input type="text" class="variableValue textareavalues submitVariableValue" name="<%- variable.Name %>" title="<%- description %>" id="<%- key %>" value="<%- _.escape(variable.Value) %>" data-variable-model="<%- model %>" data-variable-description="<%- description %>" data-variable-group="<%- group %>" data-variable-advanced="<%- advanced ? 'true' : 'false' %>"  data-variable-hidden="<%- hidden ? 'true' : 'false' %>" />
                                 <button value="<%- key %>" class="var-userfolder-button btn far fa-folder-open input-button" type="button" title="Browse, Upload User Space files, and Select one folder"></button>
+                                <% if (!isSubmissionMode) { %>
+                                <button class="btn input-button glyphicon glyphicon-edit text-link m-l-xs" title="Edit variable" type="button"></button>
+                                <% } %>
                             </div>
                             <div class="variableInfoWButton col-md-5">
                                 <div class="variableInfo">
@@ -347,6 +374,9 @@ jQuery(document).ready(function($){
                             <div class="col-md-4 container-flex">
                                 <input type="text" class="variableValue textareavalues submitVariableValue" name="<%- variable.Name %>" title="<%- description %>" id="<%- key %>" value="<%- _.escape(variable.Value) %>" data-variable-model="<%- model %>" data-variable-description="<%- description %>" data-variable-group="<%- group %>" data-variable-advanced="<%- advanced ? 'true' : 'false' %>"  data-variable-hidden="<%- hidden ? 'true' : 'false' %>" />
                                 <button title="Select one catalog object" value="<%- key %>" class="var-catalogobject-button btn input-button" type="button"><img src="images/catalog-portal.png" height="20"></button>
+                                <% if (!isSubmissionMode) { %>
+                                <button class="btn input-button glyphicon glyphicon-edit text-link m-l-xs" title="Edit variable" type="button"></button>
+                                <% } %>
                             </div>
                             <div class="variableInfoWButton col-md-5">
                                 <div class="variableInfo">
@@ -355,24 +385,33 @@ jQuery(document).ready(function($){
                                 </div>
                             </div>
                 <% } else if (resolvedModel && (resolvedModel.toLowerCase().indexOf('pa:not_empty_string') == 0 || resolvedModel.toLowerCase().indexOf('pa:json') == 0 || resolvedModel.toLowerCase().indexOf('pa:spel') == 0 || resolvedModel.toLowerCase().indexOf('pa:regexp') == 0) ) {  %>
-                            <div class="col-md-4">
+                            <div class="col-md-4 container-flex">
                                 <textarea class="variableValue textareavalues submitVariableValue" rows=1 name="<%- key %>" title="<%- description %>" id="<%- key %>" data-variable-model="<%- model %>" data-variable-description="<%- description %>" data-variable-group="<%- group %>" data-variable-advanced="<%- advanced ? 'true' : 'false' %>"  data-variable-hidden="<%- hidden ? 'true' : 'false' %>"><%- variable.Value %></textarea>
+                                <% if (!isSubmissionMode) { %>
+                                <button class="btn input-button glyphicon glyphicon-edit text-link m-l-xs" title="Edit variable" type="button"></button>
+                                <% } %>
                             </div>
                             <div class="variableInfo col-md-5">
                                 <label class="font-smaller" data-help-self data-help="<%- description %>"><%- description %></label>
                                 <label class="font-smaller text-muted" data-help-self data-help="<%- resolvedModel %>"><%- resolvedModel %></label>
                             </div>
                 <% } else if (!resolvedModel) {  %>
-                            <div class="col-md-4">
+                            <div class="col-md-4 container-flex">
                                 <textarea class="variableValue textareavalues submitVariableValue" rows=1 name="<%- key %>" title="<%- description %>" id="<%- key %>" data-variable-model="<%- model %>" data-variable-description="<%- description %>" data-variable-group="<%- group %>" data-variable-advanced="<%- advanced ? 'true' : 'false' %>"  data-variable-hidden="<%- hidden ? 'true' : 'false' %>"><%- variable.Value %></textarea>
+                                <% if (!isSubmissionMode) { %>
+                                <button class="btn input-button glyphicon glyphicon-edit text-link m-l-xs" title="Edit variable" type="button"></button>
+                                <% } %>
                             </div>
                             <div class="variableInfo col-md-5">
                                 <label class="font-smaller" data-help-self data-help="<%- description %>"><%- description %></label>
                                 <label class="font-smaller text-muted" data-help-self data-help="<%- resolvedModel %>"><%- resolvedModel %></label>
                             </div>
                 <% } else { %>
-                            <div class="col-md-4">
+                            <div class="col-md-4 container-flex">
                                 <input type="text" class="variableValue textareavalues submitVariableValue" name="<%- key %>" title="<%- description %>" id="<%- key %>" value="<%- _.escape(variable.Value) %>" data-variable-model="<%- model %>" data-variable-description="<%- description %>" data-variable-group="<%- group %>" data-variable-advanced="<%- advanced ? 'true' : 'false' %>"  data-variable-hidden="<%- hidden ? 'true' : 'false' %>" />
+                                <% if (!isSubmissionMode) { %>
+                                <button class="btn input-button glyphicon glyphicon-edit text-link m-l-xs" title="Edit variable" type="button"></button>
+                                <% } %>
                             </div>
                             <div class="variableInfo col-md-5">
                                 <label class="font-smaller" data-help-self data-help="<%- description %>"><%- description %></label>

@@ -232,12 +232,12 @@ define(
 							var openAccordion = false;
 							if (isTask) {
 							    // Task properties panel : open the last one open or 1st one by default
-							    if ((i == 0 && !StudioApp.models.openedAccordion) || accId == StudioApp.models.openedAccordion) {
+							    if ((i === 0 && !StudioApp.models.openedAccordion) || accId === StudioApp.models.openedAccordion) {
                                     openAccordion = true;
                                 }
 							} else {
 							    // Workflow properties panel : 1st one open
-							    if (i == 0) {
+							    if (i === 0) {
                                     openAccordion = true;
                                 }
 							}
@@ -248,7 +248,13 @@ define(
 								dataTabHelp = ' data-help="' + el.attr("data-tab-help") + '"';
 							}
 
-							var accordionGroup = $('<div class="panel panel-default"><div class="panel-heading"><a id="'+ el.attr("data-tab")+ '" data-toggle="collapse"' + dataTabHelp + ' data-parent="#accordion-properties" href="#' + accId + '">' + el.attr("data-tab") + '</a></div></div>');
+							var isWorkflowVariables = el.attr('sub-data-tab')
+							var detailedVarsViewLink = ""
+							if (isWorkflowVariables) {
+								detailedVarsViewLink = '<div id="variables-button" class="font-smaller text-muted p-w-xs m-l-a pointer"><a class="skip">' + isWorkflowVariables + '</a></div>'
+							}
+
+							var accordionGroup = $('<div class="panel panel-default"><div class="panel-heading container-flex w-100"><a id="'+ el.attr("data-tab")+ '" data-toggle="collapse"' + dataTabHelp + ' data-parent="#accordion-properties" href="#' + accId + '">' + el.attr("data-tab") + '</a>' + detailedVarsViewLink + '</div></div>');
 							currentAccordionGroup = $('<div id="' + accId + '" class="panel-body collapse ' + (openAccordion ? "in" : "") + '"></div>');
 
 							if (el.attr("data-help")) {
@@ -278,8 +284,10 @@ define(
 							checkbox.detach().appendTo(label);
 						}
 
-						if (currentAccordionGroup)
+						if (currentAccordionGroup){
+							currentAccordionGroup.append(detailedVarsViewLink)
 							currentAccordionGroup.append($('<div class="form-wrap"></div>').append(el));
+						}
 
 					})
 
@@ -416,7 +424,7 @@ define(
 					var addHelpAfter = el.find("label:first")
 
 					if (addHelpAfter.length==0) {
-						addHelpAfter = el.parents(".panel").find(".panel-heading a");
+						addHelpAfter = el.parents(".panel").find(".panel-heading a:not(.skip)");
 					} else if (addHelpAfter.hasClass("checkbox")) {
 						addHelpAfter = addHelpAfter.find("input:last");
 					}

@@ -769,7 +769,8 @@ define(
             return toggledTasks;
         }
 
-        $("#submit-button").click(function (event) {
+        function openVariablesView(event){
+            console.log("CLICKED")
             event.preventDefault();
 
             var studioApp = require('StudioApp');
@@ -787,7 +788,7 @@ define(
             var jobDescription = studioApp.models.jobModel.get("Description");
             var jobDocumentation = studioApp.models.jobModel.get("Generic Info Documentation");
             var jobGenericInfos = studioApp.models.jobModel.get("Generic Info");
-
+            var isSubmissionMode = event.currentTarget.id === 'submit-button';
 
             var jobVariablesOriginal = readOrStoreVariablesInModel();
 
@@ -796,10 +797,10 @@ define(
             var validationData = validate();
             if (validationData.updatedModels && validationData.updatedVariables) {
 
-               function addVariableToGroup(key, variableToAdd, groupsAndVariables) {
+                function addVariableToGroup(key, variableToAdd, groupsAndVariables) {
                     var group = "NOGROUP";
                     if (variableToAdd.Group && variableToAdd.Group !== "") {
-                       group = variableToAdd.Group;
+                        group = variableToAdd.Group;
                     }
                     if (!groupsAndVariables.has(group)) {
                         groupsAndVariables.set(group, new Map());
@@ -808,12 +809,12 @@ define(
                 }
 
                 function addVariablesInGroupOrder(groupsAndVariables, variablesJob) {
-                     for (var group of groupsAndVariables.keys()) {
+                    for (var group of groupsAndVariables.keys()) {
                         var groupVarsMap =  groupsAndVariables.get(group);
                         for (var key of groupVarsMap.keys()) {
                             variablesJob[key] = groupVarsMap.get(key);
                         }
-                     }
+                    }
                 }
 
                 var jobVariablesByGroup = new Map();
@@ -864,11 +865,29 @@ define(
                 executeIfConnected(submit);
                 return;
             }
-            studioApp.views.jobVariableView.render({'jobVariables': jobVariables, 'jobName':jobName, 'jobProjectName':jobProjectName, 'jobTags':jobTags, 'jobDescription':jobDescription, 'jobDocumentation':jobDocumentation, 'jobGenericInfos':jobGenericInfos, 'errorMessage':'', 'infoMessage' :'', 'showAdvanced' : false, 'toggledTasks' : []});
-            $('#execute-workflow-modal').modal();
+            studioApp.views.jobVariableView.render({
+                'jobVariables': jobVariables,
+                'jobName': jobName,
+                'jobProjectName': jobProjectName,
+                'jobTags': jobTags,
+                'jobDescription': jobDescription,
+                'jobDocumentation': jobDocumentation,
+                'jobGenericInfos': jobGenericInfos,
+                'errorMessage': '',
+                'isSubmissionMode': isSubmissionMode,
+                'infoMessage': '',
+                'showAdvanced': false,
+                'showHidden': false,
+                'toggledTasks': []
+            });
+            if (event.currentTarget.id === 'variables-button') {
+                $('#workflow-variables-modal').modal();
+            } else {
+                $('#execute-workflow-modal').modal();
+            }
 
             initializeSubmitFormForTaskVariables();
-        });
+        }
 
         $("#plan-button").click(function (event) {
             event.preventDefault();
@@ -893,6 +912,10 @@ define(
             executeOrCheck(event, true, false)
         });
 
+        $("#workflow-variables-modal,#execute-workflow-modal").on('hidden.bs.modal', function () {
+            $(this).data('bs.modal', null);
+        });
+
         // show ThirdPartyCredential modal with updated value of the corresponding variable
         $(document).on("click", '.third-party-credential-button', function (event) {
             var varKey = event.currentTarget.getAttribute('value');
@@ -913,6 +936,7 @@ define(
                 var inputVariables = {};
                 var inputReceived = $('#job-variables .variableValue');
                 var showAdvanced = $('#advanced-checkbox').is(":checked");
+                var showHidden = $('#hidden-checkbox').is(":checked");
                 var toggledTasks = getToggledTasks();
 
                 var extractVariableName = function (key) { return (key.split(":").length == 2 ? key.split(":")[1] : key) };
@@ -954,21 +978,49 @@ define(
 
                 if (!validationData.valid) {
                     var jobVariables = extractUpdatedVariables(inputVariables, validationData);
-                    studioApp.views.jobVariableView.render({'jobVariables': jobVariables, 'jobName':jobName, 'jobProjectName':jobProjectName, 'jobTags':jobTags, 'jobDescription':jobDescription, 'jobDocumentation':jobDocumentation, 'jobGenericInfos':jobGenericInfos, 'errorMessage': validationData.errorMessage, 'infoMessage' : '', 'showAdvanced' : showAdvanced, 'toggledTasks' : toggledTasks});
+                    studioApp.views.jobVariableView.render({
+                        'jobVariables': jobVariables,
+                        'jobName': jobName,
+                        'jobProjectName': jobProjectName,
+                        'jobTags': jobTags,
+                        'jobDescription': jobDescription,
+                        'jobDocumentation': jobDocumentation,
+                        'jobGenericInfos': jobGenericInfos,
+                        'errorMessage': validationData.errorMessage,
+                        'infoMessage': '',
+                        'showAdvanced': showAdvanced,
+                        'showHidden': showHidden,
+                        'isSubmissionMode':isSubmissionMode,
+                        'toggledTasks': toggledTasks
+                    });
                 } else if (check) {
-                    studioApp.views.jobVariableView.render({'jobVariables': extractUpdatedVariables(inputVariables, validationData), 'jobName':jobName, 'jobProjectName':jobProjectName, 'jobTags':jobTags, 'jobDescription':jobDescription, 'jobDocumentation':jobDocumentation, 'jobGenericInfos':jobGenericInfos, 'errorMessage': '', 'infoMessage' : 'Workflow is valid.', 'showAdvanced' : showAdvanced, 'toggledTasks' : toggledTasks});
+                    studioApp.views.jobVariableView.render({
+                        'jobVariables': extractUpdatedVariables(inputVariables, validationData),
+                        'jobName': jobName,
+                        'jobProjectName': jobProjectName,
+                        'jobTags': jobTags,
+                        'jobDescription': jobDescription,
+                        'jobDocumentation': jobDocumentation,
+                        'jobGenericInfos': jobGenericInfos,
+                        'errorMessage': '',
+                        'infoMessage': 'Workflow is valid.',
+                        'showAdvanced': showAdvanced,
+                        'showHidden': showHidden,
+                        'isSubmissionMode':isSubmissionMode,
+                        'toggledTasks': toggledTasks
+                    });
                 } else {
                     $('#execute-workflow-modal').modal("hide");
-                    if(!plan){
+                    if (!plan) {
                         submit();
-                    }else{
+                    } else {
                         $("#plan-workflow-modal").modal();
                     }
                 }
                 readOrStoreVariablesInModel(oldVariables);
 
                 initializeSubmitFormForTaskVariables();
-                
+
                 if (handler) {
                     handler(validationData);
                 }
@@ -1798,6 +1850,10 @@ define(
                 pasteAllow = {left: e.pageX, top: e.pageY};
                 e.stopPropagation();
             })
+
+            $("#submit-button,#variables-button").click(function (event) {
+                openVariablesView(event)
+            });
         });
 
         // adding form-control classes to new input elements after clicking on "add"

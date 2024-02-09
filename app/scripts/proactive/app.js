@@ -28,7 +28,8 @@ define(
         'proactive/view/dom',
         'proactive/jsplumb',
         'jquery.ui.touch-punch',
-        '../studio-conf'
+        '../studio-conf',
+        'proactive/view/dom'
 
     ],
 
@@ -97,6 +98,7 @@ define(
             this.views.catalogSetSecondaryTemplatesBucketView = new CatalogSetTemplatesBucketView({buckets: this.models.catalogBuckets});
             this.views.setPresetView = new SetPresetView({presets: Config.palette_presets});
             this.views.jobVariableView =  new JobVariableView();
+            //this.views.dom = new dom();
             this.router = new StudioRouter(this);
         },
         logout: function() {
